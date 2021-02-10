@@ -1,0 +1,25 @@
+// import sample_mflix into local MongoDB
+
+//download sample databases from Blackboard
+
+// go to command prompt and move to directory that contains json files you want to import
+
+mongoimport --db sample_mflix --collection=movies --drop --file movies.json --jsonArray
+
+mongoimport --db sample_mflix --collection=comments --drop --file comments.json --jsonArray
+
+mongoimport --db sample_mflix --collection=theaters --drop --file theaters.json --jsonArray
+
+mongoimport --db sample_mflix --collection=users --drop --file users.json --jsonArray
+
+// import sample airbnb into local MongoDB
+
+mongoimport --db sample_airbnb --collection=ListingsAndReviews --drop --file ListingsAndReviews.json --jsonArray
+
+// import sample analytics into local MongoDB
+
+mongoimport --db sample_analytics --collection=accounts --drop --file accounts.json --jsonArray
+
+mongoimport --db sample_analytics --collection=customers --drop --file customers.json --jsonArray
+
+mongoimport --db sample_analytics --collection=transactions --drop --file transactions.json --jsonArray
