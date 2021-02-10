@@ -1,6 +1,6 @@
-// import sample_mflix into local MongoDB
-
 //download sample databases from Blackboard
+
+// import sample_mflix into local MongoDB
 
 // go to command prompt and move to directory that contains json files you want to import
 
