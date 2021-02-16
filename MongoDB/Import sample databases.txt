@@ -1,3 +1,5 @@
+// mongoimport/export is no longer available on MongoDB version 4.4. it is available on older version 4.2.
+
 //download sample databases from Blackboard
 
 // import sample_mflix into local MongoDB
