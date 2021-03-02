@@ -176,6 +176,51 @@ and find the adjusted (with trailers) runtime of the longest movie in each genre
 trailers run for 12 minutes before any film.
 */
 
+var pipeline=[
+    {$match: {released: {$lte: new ISODate("2001-01-01")}}},
+    {$group: {
+        _id: {"$arrayElemAt": ["$genres", 0]},
+        "popularity": {$avg: "$imdb.rating"},
+        "top_movie": {$max: "$imdb.rating"},
+        "longest_runtime": {$max: "$runtime"}
+    }
+    },
+    {$sort: {"popularity":-1}},
+    {$limit:5},
+    {$project: {
+        _id:1,
+        popularity:1,
+        top_movie:1,
+        adjusted_runtime: {$add: ["$longest_runtime",12]}
+    }}
+]
+
+db.movies.aggregate(pipeline).forEach(printjson)
+
+
+//unwind genres
+
+var pipeline=[
+    {$match: {released: {$lte: new ISODate("2001-01-01")}}},
+    {$unwind: "$genres"},
+    {$group: {
+        _id: "$genres",
+        "popularity": {$avg: "$imdb.rating"},
+        "top_movie": {$max: "$imdb.rating"},
+        "longest_runtime": {$max: "$runtime"}
+    }
+    },
+    {$sort: {"popularity":-1}},
+    {$limit:5},
+    {$project: {
+        _id:1,
+        popularity:1,
+        top_movie:1,
+        adjusted_runtime: {$add: ["$longest_runtime",12]}
+    }}
+]
+
+db.movies.aggregate(pipeline).forEach(printjson)
 
 
 /*5. find the best title from each genre for the movies older than 2001,
