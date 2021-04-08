@@ -1,5 +1,10 @@
 //Chapter 4 Shortest Path
 
+Show databases;
+create database chapter4
+Drop database chapter4
+
+
 //Using the shortest path algorithm within Neo4j
 
 CREATE (A:Node {name: "A"})
@@ -55,7 +60,7 @@ RETURN gds.util.asNode(nodeId).name as name, cost
 
 MATCH (A:Node {name: "A"})
 MATCH (E:Node {name: "E"})
-CALL gds.alpha.shortestPath.write("graph_weighted", {
+CALL gds.alpha.shortestPath.write("mygraph_weighted", {
         startNode: A, 
         endNode: E,
         relationshipWeightProperty: "weight"
@@ -82,7 +87,7 @@ RETURN currentNode, r, nextNode
 
 MATCH (A:Node {name: "A"})
 MATCH (E:Node {name: "E"})
-CALL gds.alpha.kShortestPaths.stream("graph_weighted", {
+CALL gds.alpha.kShortestPaths.stream("mygraph_weighted", {
             startNode: A, 
             endNode: E, 
             k:2, 
@@ -121,7 +126,7 @@ RETURN gds.util.asNode(sourceNodeId).name as start,
 //Finding the minimum spanning tree in a Neo4j graph
 
 MATCH (A:Node {name: "A"})
-CALL gds.alpha.spanningTree.minimum.write("graph_weighted", {
+CALL gds.alpha.spanningTree.minimum.write("mygraph_weighted", {
     startNodeId: id(A),
     relationshipWeightProperty: 'weight',
     writeProperty: 'MINST',
