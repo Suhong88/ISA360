@@ -56,7 +56,7 @@ var pipeline=[
   
   db.vaccine_tweets.aggregate(pipeline).forEach(printjson)
  
-  //union users and retweet user
+  //union users and retweet user to create user node
  
   var pipeline=[
       {$unionWith: {coll: "retweeted_users"}},
@@ -77,7 +77,7 @@ var pipeline=[
            location: { $replaceAll: { input: "$location", find:  ".", replacement: "" } }
       }},
       { $addFields: 
-      //retrieve the location that starts with a character and ends with a character
+      //retrieve the location that starts with a character and ends with a character. Remove invalid location.
          { returnLocation: { $regexFind: { input: "$location", regex: /^[A-Z].*[A-Z]$/i} } 
       }},
       {$addFields:
@@ -99,7 +99,7 @@ var pipeline=[
  
   db.users.aggregate(pipeline).forEach(printjson)
  
-  //extract number of retweets for each user.
+  //extract number of retweets for each user. Created retweet edge
  
  var pipeline=[
      //only look at the retweet
@@ -115,7 +115,7 @@ var pipeline=[
      //{$sort: {"numRetweets":-1}},
      {$addFields:
          {
-           type: "IS RETWEETED BY"
+           type: "IS_RETWEETED_BY"
       }},
      {$project:{
         "01_retweeted_user": "$_id.retweeted_user", 
@@ -130,4 +130,66 @@ var pipeline=[
  
  db.vaccine_tweets.aggregate(pipeline).forEach(printjson)
  
- 
+ //extract tweets node
+var pipeline=[
+    {$addFields: {
+        date: {$toDate: "$created_at"}}},
+    {$addFields: {
+        source: { $regexFind: { input: "$source", regex: />.*</i}}}},
+    {$addFields:
+    {
+       source: { $replaceAll: { input: "$source.match", find: ">", replacement: ""}}}},
+    {$addFields:
+      {
+           source: { $replaceAll: { input: "$source", find: "<", replacement: ""}}}},
+    {$addFields:
+       {
+              label: "Tweet"
+       }},
+    {$group: {
+        "_id":"$id_str",
+        "02_created_at": {$first:"$date"},
+         "03_source": {$first:"$source"},
+         "04_language":{$first:"$lang"},
+        "05_latitude": {$first:{$arrayElemAt: ["$geo.coordinates", 0]}},
+        "06_longitude": {$first: {$arrayElemAt: ["$geo.coordinates", 1]}},
+        "07_label": {$first:"$label"}
+    }},
+  //{$limit:10}
+ {$out: "tweets"}
+]
+
+//for big dataset, need to set allowDiskUse to true
+db.vaccine_tweets.aggregate(pipeline, {allowDiskUse: true }).forEach(printjson)
+
+
+//extract tweeted edge
+var pipeline=[
+     {$addFields:
+       {
+              type: "TWEETED"
+       }},
+    {$group: {
+        "_id": "$id_str",
+        "02_user_name":{$first:"$user.screen_name"},
+        "03_type": {$first:"$type"}
+    }},
+ // {$limit:10}
+ {$out: "tweeted"}
+]
+
+//for big dataset, need to set allowDiskUse to true
+db.vaccine_tweets.aggregate(pipeline, {allowDiskUse: true }).forEach(printjson)
+
+
+//This is to verify some tweets have dupliated tweet id
+var pipeline=[
+   {$group: {
+       "_id":"$id_str",
+       "count": {$sum: 1},
+   }},
+   {$sort: {count:-1}}, 
+  {$limit:10}
+]
+
+db.vaccine_tweets.aggregate(pipeline).forEach(printjson)

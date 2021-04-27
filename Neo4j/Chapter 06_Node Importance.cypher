@@ -58,7 +58,7 @@ CALL gds.alpha.degree.stream(
 RETURN gds.util.asNode(nodeId).name as nodeName, score as total_degree
 ORDER BY total_degree DESC
 
-// in-degree
+// out-degree
 
 CALL gds.alpha.degree.stream(
     {
@@ -74,7 +74,7 @@ CALL gds.alpha.degree.stream(
 RETURN gds.util.asNode(nodeId).name as nodeName, score as in_degree
 ORDER BY in_degree DESC
 
-//out-degree
+//in-degree
 
 CALL gds.alpha.degree.stream(
     {

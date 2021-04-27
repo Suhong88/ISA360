@@ -1,14 +1,20 @@
-Vaccine_RETWEETS
+/* Preparation steps:
 
-//Create a new project for this assignment
+1. Create a new project (Vaccine_Tweets_Network), use version 4.1.3
+2. copy all files into the import folder of this project
+3. make sure you install proper APOC and GDS Library
+4. go to the setting, change maxt heap size to 5G: dbms.memory.heap.max_size=5G
 
-// copy all files into the import folder of this project
-// make sure you install proper APOC and GDS Library
-//go to the setting, change maxt heap size to 5G: dbms.memory.heap.max_size=5G
+//check below link for the instruction for neo4j bulk import
+https://neo4j.com/docs/operations-manual/current/tools/neo4j-admin-import/
 
-//go to cypher shell, execute the following code. Need to have all the codes in one line. Use default database neo4j
+really important: do not put extra space in import script or header file
+*/
 
-bin\neo4j-admin import --database=neo4j --delimiter="," --skip-bad-relationships=true --nodes import/user_node_header.csv,import/user_node.csv --relationships import/IS_RETWEETED_BY_edge_header.csv,import/IS_RETWEETED_BY_edge.csv
+//go to neo4j terminal shell, execute the following command to import vaccine tweets data. 
+
+bin\neo4j-admin import --database=neo4j --delimiter="," --skip-bad-relationships=true --ignore-empty-strings=true --nodes import/user_node_header.csv,import/user_node.csv --nodes import/tweet_node_header.csv,import/tweet_node.csv --relationships import/retweet_edge_header.csv,import/retweet_edge.csv --relationships import/tweeted_edge_header.csv,import/tweeted_edge.csv
+
 
 //check degree centrality.
 
