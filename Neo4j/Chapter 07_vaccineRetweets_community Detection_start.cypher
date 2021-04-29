@@ -16,6 +16,23 @@ really important: do not put extra space in import script or header file
 bin\neo4j-admin import --database=neo4j --delimiter="," --skip-bad-relationships=true --ignore-empty-strings=true --nodes import/user_node_header.csv,import/user_node.csv --nodes import/tweet_node_header.csv,import/tweet_node.csv --relationships import/retweet_edge_header.csv,import/retweet_edge.csv --relationships import/tweeted_edge_header.csv,import/tweeted_edge.csv
 
 
+//import text 
+
+//need to enable import file
+apoc.import.file.enabled=true
+
+//create an index on tweet_id to speed search performance
+
+CREATE INDEX tweet_id_index FOR (t:Tweet) ON (t.tweet_id)
+
+//begin to import text
+
+CALL apoc.load.json("tweetText.json")
+YIELD value as row
+merge (t:Tweet {tweet_id:row._id})
+set t.text=row.text
+
+
 //create a named graph
 CALL gds.graph.create.cypher(
     "myGraph", 
