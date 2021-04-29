@@ -193,3 +193,17 @@ var pipeline=[
 ]
 
 db.vaccine_tweets.aggregate(pipeline).forEach(printjson)
+
+//extract text from each tweet
+
+var pipeline=[
+    {$group: {
+        "_id":"$id_str",
+        "text": {$first:"$text"}
+    }},
+    {$sort: {count:-1}}, 
+   //{$limit:10},
+  {$out: "tweetText"}
+ ]
+ 
+ db.vaccine_tweets.aggregate(pipeline, {allowDiskUse: true }).forEach(printjson)
