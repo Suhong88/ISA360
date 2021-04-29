@@ -27,22 +27,25 @@ CALL gds.graph.create.cypher(
 
 //weakly connected components
 
-
-
-
+call gds.wcc.stream("myGraph")
+YIELD nodeId, componentId
+return gds.util.asNode(nodeId).name as nodeName, componentId
+order by componentId
 
 
 //Strongly connected components
 
-
-
+call gds.alpha.scc.stream("myGraph")
+YIELD nodeId, componentId
+return gds.util.asNode(nodeId).name as nodeName, componentId
+order by componentId
 
 
 //write the GDS results in the graph
 
 
 
-//check number of users in each community
+//check number of users in each component
 
 
 

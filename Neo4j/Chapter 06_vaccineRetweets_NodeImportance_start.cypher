@@ -20,29 +20,44 @@ bin\neo4j-admin import --database=neo4j --delimiter="," --skip-bad-relationships
 
 //Out-degree (top users who received retweets from the most users)
 
+match (u1:User)-[r:IS_RETWEETED_BY]->(u2:User)
+return u1.name, count(u2) as outDegree
+order by outDegree desc
+limit 10
 
 
 //uses who have the highest number of retweets
 
-
-
-
+match (u1:User)-[r:IS_RETWEETED_BY]->(u2:User)
+return u1.name, sum(r.numRetweets) as outDegree
+order by outDegree desc
+limit 10
 
 //In_degree (top users who tweeted the most users).
 
-
-
-
+match (u1:User)-[r:IS_RETWEETED_BY]->(u2:User)
+return u2.name, count(u1) as inDegree
+order by inDegree desc
+limit 10
 
 //use who had the most tweets
 
-
-
+match (u1:User)-[r:IS_RETWEETED_BY]->(u2:User)
+return u2.name, sum(r.numRetweets) as inDegree
+order by inDegree desc
+limit 10
 
 //total degree
 
+match (u1:User)-[r:IS_RETWEETED_BY]-(u2:User)
+return u2.name, count(u1) as numUsers
+order by numUsers desc
+limit 10
 
-
+match (u1:User)-[r:IS_RETWEETED_BY]-(u2:User)
+return u2.name, sum(r.numRetweets) as numRetweets
+order by numRetweets desc
+limit 10
 
 //page rank
 
