@@ -156,7 +156,7 @@ var pipeline=[
         "07_label": {$first:"$label"}
     }},
   //{$limit:10}
- {$out: "tweets"}
+ {$out: "tweet_node"}
 ]
 
 //for big dataset, need to set allowDiskUse to true
@@ -175,7 +175,7 @@ var pipeline=[
         "03_type": {$first:"$type"}
     }},
  // {$limit:10}
- {$out: "tweeted"}
+ {$out: "tweeted_edge"}
 ]
 
 //for big dataset, need to set allowDiskUse to true
